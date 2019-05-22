@@ -1,0 +1,9 @@
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\bin\Debug\JiraAPIActivities.dll
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\bin\Debug\JiraAPIActivities.pdb
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\bin\Debug\Newtonsoft.Json.dll
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\bin\Debug\Newtonsoft.Json.xml
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\obj\Debug\JiraAPIActivities.csproj.CoreCompileInputs.cache
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\obj\Debug\JiraAPIActivities.csproj.CopyComplete
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\obj\Debug\JiraAPIActivities.dll
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\obj\Debug\JiraAPIActivities.pdb
+C:\Users\jeremy.woffinden@uip\source\repos\JiraAPIActivities\JiraAPIActivities\obj\Debug\JiraAPIActivities.csprojAssemblyReference.cache
