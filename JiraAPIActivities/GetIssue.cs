@@ -38,6 +38,11 @@ namespace JiraAPI.Activities
         public InArgument<string> IssueKey { get; set; }
 
         [LocalizedCategory(nameof(Resources.FieldExtraction))]
+        [LocalizedDisplayName(nameof(Resources.UseDefault))]
+        [LocalizedDescription(nameof(Resources.UseDefaultDesc))]
+        public bool UseDefault { get; set; } = true;
+
+        [LocalizedCategory(nameof(Resources.FieldExtraction))]
         [LocalizedDisplayName(nameof(Resources.FieldList))]
         [LocalizedDescription(nameof(Resources.FieldListDesc))]
         public InArgument<string[]> FieldList { get; set; }
@@ -54,6 +59,11 @@ namespace JiraAPI.Activities
 
         protected override string Execute(CodeActivityContext context)
         {
+            // Default Fields
+            string[] defaultFields = {
+                "summary", "description", "status", "priority", "fixVersions", "labels"
+            };
+
             // Instatiate HttpClient
             HttpClient client = new HttpClient();
             string url = URL.Get(context);
@@ -111,43 +121,26 @@ namespace JiraAPI.Activities
             JObject res = JsonConvert.DeserializeObject<JObject>(result);
 
             // See if user specified which fields to extract
-            string[] defaultFields = {
-                "summary", "description", "status", "priority", "fixVersions", "labels"
-            };
-            string[] fieldsToShow = FieldList.Get(context);
-            string jsonPath = FieldJsonPath.Get(context);
-            // If field list has been filled in
-            if (fieldsToShow != null)
+            string[] fieldsToShow = null;
+            // if use default is on
+            if (UseDefault)
             {
-                JObject output = new JObject
-                {
-                    ["fields"] = new JObject()
-                };
-                JObject fields = (JObject)res["fields"]; // get fields from response
-                // Try to extract each field from response
-                foreach (string str in fieldsToShow)
-                {
-                    JToken target;
-                    try
-                    {
-                        target = fields[str];
-                        if (target.SelectToken("name", errorWhenNoMatch: false) != null)
-                        {
-                            output["fields"][str] = target["name"];
-                        }
-                        else
-                        {
-                            output["fields"][str] = target;
-                        }
-                    }
-                    catch
-                    {
-                        output["fields"][str] = "Field does not exist";
-                    }
-                }
-                return JsonConvert.SerializeObject(output, Formatting.Indented);
+                fieldsToShow = defaultFields;
             }
-            else if (jsonPath != null) {
+            string[] fieldlist = FieldList.Get(context);
+            // if default is being used and user has added additional fields
+            if (fieldsToShow != null && fieldlist != null)
+            {
+                fieldsToShow = fieldsToShow.Concat(fieldlist).ToArray();
+            }
+            else if (fieldlist != null)
+            {
+                fieldsToShow = fieldlist;
+            }
+            string jsonPath = FieldJsonPath.Get(context);
+            // JSON first
+            if (jsonPath != null)
+            {
                 // Try to read in the file
                 string jsonString;
                 try
@@ -176,6 +169,37 @@ namespace JiraAPI.Activities
                 }
                 // Return template
                 return JsonConvert.SerializeObject(template, Formatting.Indented);
+            }
+            // If field list has been filled in or default values are being used
+            else if (fieldsToShow != null)
+            {
+                JObject output = new JObject
+                {
+                    ["fields"] = new JObject()
+                };
+                JObject fields = (JObject)res["fields"]; // get fields from response
+                // Try to extract each field from response
+                foreach (string str in fieldsToShow)
+                {
+                    JToken target;
+                    try
+                    {
+                        target = fields[str];
+                        if (target.SelectToken("name", errorWhenNoMatch: false) != null)
+                        {
+                            output["fields"][str] = target["name"];
+                        }
+                        else
+                        {
+                            output["fields"][str] = target;
+                        }
+                    }
+                    catch
+                    {
+                        output["fields"][str] = "Field does not exist";
+                    }
+                }
+                return JsonConvert.SerializeObject(output, Formatting.Indented);
             }
             else
             {

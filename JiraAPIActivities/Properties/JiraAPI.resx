@@ -154,13 +154,13 @@
     <value>Field JSON</value>
   </data>
   <data name="FieldJsonDesc" xml:space="preserve">
-    <value>Path to JSON file with fields to extract from response. </value>
+    <value>Path to JSON file with fields to extract from response. This will override default values.</value>
   </data>
   <data name="FieldList" xml:space="preserve">
     <value>Field List</value>
   </data>
   <data name="FieldListDesc" xml:space="preserve">
-    <value>List of fields to extract from response.</value>
+    <value>List of fields to extract from response. If default values are being used, then the items in this list will be added on to the default values.</value>
   </data>
   <data name="GetIssue" xml:space="preserve">
     <value>Get Issue</value>
@@ -197,6 +197,12 @@
   </data>
   <data name="URLDesc" xml:space="preserve">
     <value>Full URL for target Jira site starting with http(s):// excluding the API endpoint.</value>
+  </data>
+  <data name="UseDefault" xml:space="preserve">
+    <value>Use Default</value>
+  </data>
+  <data name="UseDefaultDesc" xml:space="preserve">
+    <value>Boolean value to determine whether or not default field values ("summary", "description", "status", "priority", "fixVersions", "labels") should be used to extract fields from the response.</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>

@@ -169,7 +169,7 @@ namespace JiraAPI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to JSON file with fields to extract from response. .
+        ///   Looks up a localized string similar to Path to JSON file with fields to extract from response. This will override default values..
         /// </summary>
         internal static string FieldJsonDesc {
             get {
@@ -187,7 +187,7 @@ namespace JiraAPI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List of fields to extract from response..
+        ///   Looks up a localized string similar to List of fields to extract from response. If default values are being used, then the items in this list will be added on to the default values..
         /// </summary>
         internal static string FieldListDesc {
             get {
@@ -300,6 +300,24 @@ namespace JiraAPI.Properties {
         internal static string URLDesc {
             get {
                 return ResourceManager.GetString("URLDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Default.
+        /// </summary>
+        internal static string UseDefault {
+            get {
+                return ResourceManager.GetString("UseDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean value to determine whether or not default field values (&quot;summary&quot;, &quot;description&quot;, &quot;status&quot;, &quot;priority&quot;, &quot;fixVersions&quot;, &quot;labels&quot;) should be used to extract fields from the response..
+        /// </summary>
+        internal static string UseDefaultDesc {
+            get {
+                return ResourceManager.GetString("UseDefaultDesc", resourceCulture);
             }
         }
         
