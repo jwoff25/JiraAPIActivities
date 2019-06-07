@@ -154,13 +154,13 @@
     <value>フィールド JSON</value>
   </data>
   <data name="FieldJsonDesc" xml:space="preserve">
-    <value>レスポンスから抽出するフィールドが記載されている JSON ファイルのパスです。</value>
+    <value>レスポンスから抽出するフィールドが記載されている JSON ファイルのパスです。 既定値を上書きします。</value>
   </data>
   <data name="FieldList" xml:space="preserve">
     <value>フィールドリスト</value>
   </data>
   <data name="FieldListDesc" xml:space="preserve">
-    <value>レスポンスから抽出するフィールドのリストです。</value>
+    <value>レスポンスから抽出するフィールドのリストです。既定値が使用される場合はこのリストの項目が既定値に追加されます。</value>
   </data>
   <data name="GetIssue" xml:space="preserve">
     <value>課題を取得</value>
@@ -197,6 +197,12 @@
   </data>
   <data name="URLDesc" xml:space="preserve">
     <value>http(s):// から始まる API エンドポイントを除いた JIRA サーバーの URL です。</value>
+  </data>
+  <data name="UseDefault" xml:space="preserve">
+    <value>既定値を使う</value>
+  </data>
+  <data name="UseDefaultDesc" xml:space="preserve">
+    <value>レスポンスから抽出するフィールドを指定する既定値リスト ("summary", "description", "status", "priority", "fixVersions", "labels") を使用するかどうかを指定するBoolean値です。</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>ユーザー名</value>
