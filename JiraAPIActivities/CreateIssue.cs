@@ -6,33 +6,39 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using JiraAPI.Properties;
 
 namespace JiraAPI.Activities
 {
+    [LocalizedDisplayName(nameof(Resources.CreateIssue))]
     public class CreateIssue : CodeActivity<string>
     {
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Full URL for target Jira site starting with http(s)://. Note: Do not include the API endpoint. (string)")]
+        [LocalizedDescription(nameof(Resources.URLDesc))]
         public InArgument<string> URL { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Username for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.Username))]
+        [LocalizedDescription(nameof(Resources.UsernameDesc))]
         public InArgument<string> Username { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("API Key for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.ApiKey))]
+        [LocalizedDescription(nameof(Resources.ApiKeyDesc))]
         public InArgument<string> ApiKey { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Path for JSON file with issue data in it. (string)")]
+        [LocalizedDisplayName(nameof(Resources.JsonFilePath))]
+        [LocalizedDescription(nameof(Resources.JsonCreateDesc))]
         public InArgument<string> JsonFilePath { get; set; }
 
-        [Category("Output")]
-        [Description("Issue ID of the newly created issue. (string)")]
+        [LocalizedCategory(nameof(Resources.Output))]
+        [LocalizedDisplayName(nameof(Resources.Result))]
+        [LocalizedDescription(nameof(Resources.ResultKeyDesc))]
         public new OutArgument<string> Result { get => base.Result; set => base.Result = value; }
 
         protected override string Execute(CodeActivityContext context)

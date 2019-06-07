@@ -1,35 +1,55 @@
 ﻿using System;
+using System.Linq;
 using System.Activities;
 using System.ComponentModel;
 using System.Net.Http;
 using Newtonsoft.Json;
+using JiraAPI.Properties;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace JiraAPI.Activities
 {
+    [LocalizedDisplayName(nameof(Resources.GetIssue))]
     public class GetIssue : CodeActivity<string>
     {
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Full URL for target Jira site starting with http(s)://. Note: Do not include the API endpoint. (string)")]
+        [LocalizedDescription(nameof(Resources.URLDesc))]
         public InArgument<string> URL { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Username for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.Username))]
+        [LocalizedDescription(nameof(Resources.UsernameDesc))]
         public InArgument<string> Username { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("API Key for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.ApiKey))]
+        [LocalizedDescription(nameof(Resources.ApiKeyDesc))]
         public InArgument<string> ApiKey { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("ID of target issue. (string)")]
-        public InArgument<string> IssueID { get; set; }
+        [LocalizedDisplayName(nameof(Resources.IssueKey))]
+        [LocalizedDescription(nameof(Resources.IssueKeyDesc))]
+        public InArgument<string> IssueKey { get; set; }
 
-        [Category("Output")]
-        [Description("Issue data returned as JSON file. (string)")]
+        [LocalizedCategory(nameof(Resources.FieldExtraction))]
+        [LocalizedDisplayName(nameof(Resources.FieldList))]
+        [LocalizedDescription(nameof(Resources.FieldListDesc))]
+        public InArgument<string[]> FieldList { get; set; }
+
+        [LocalizedCategory(nameof(Resources.FieldExtraction))]
+        [LocalizedDisplayName(nameof(Resources.FieldJson))]
+        [LocalizedDescription(nameof(Resources.FieldJsonDesc))]
+        public InArgument<string> FieldJsonPath { get; set; }
+
+        [LocalizedCategory(nameof(Resources.Output))]
+        [LocalizedDisplayName(nameof(Resources.Result))]
+        [LocalizedDescription(nameof(Resources.ResultJsonDesc))]
         public new OutArgument<string> Result { get => base.Result; set => base.Result = value; }
 
         protected override string Execute(CodeActivityContext context)
@@ -69,7 +89,7 @@ namespace JiraAPI.Activities
             string result;
             try
             {
-                string issueid = IssueID.Get(context);
+                string issueid = IssueKey.Get(context);
                 response = client.GetAsync(url + "/rest/api/2/issue/" + issueid).Result;
                 // Throw error if status code is negative
                 if (!response.IsSuccessStatusCode)
@@ -87,8 +107,80 @@ namespace JiraAPI.Activities
             {
                 throw new Exception("API call failed. " + e.Message); 
             }
-            // Return JSON serialized string
-            return JsonConvert.SerializeObject(JsonConvert.DeserializeObject(result), Formatting.Indented);
+            // Get JSON deserialized object
+            JObject res = JsonConvert.DeserializeObject<JObject>(result);
+
+            // See if user specified which fields to extract
+            string[] defaultFields = {
+                "summary", "description", "status", "priority", "fixVersions", "labels"
+            };
+            string[] fieldsToShow = FieldList.Get(context);
+            string jsonPath = FieldJsonPath.Get(context);
+            // If field list has been filled in
+            if (fieldsToShow != null)
+            {
+                JObject output = new JObject
+                {
+                    ["fields"] = new JObject()
+                };
+                JObject fields = (JObject)res["fields"]; // get fields from response
+                // Try to extract each field from response
+                foreach (string str in fieldsToShow)
+                {
+                    JToken target;
+                    try
+                    {
+                        target = fields[str];
+                        if (target.SelectToken("name", errorWhenNoMatch: false) != null)
+                        {
+                            output["fields"][str] = target["name"];
+                        }
+                        else
+                        {
+                            output["fields"][str] = target;
+                        }
+                    }
+                    catch
+                    {
+                        output["fields"][str] = "Field does not exist";
+                    }
+                }
+                return JsonConvert.SerializeObject(output, Formatting.Indented);
+            }
+            else if (jsonPath != null) {
+                // Try to read in the file
+                string jsonString;
+                try
+                {
+                    jsonString = File.ReadAllText(jsonPath);
+                }
+                catch (FileNotFoundException e)
+                {
+                    throw new Exception("File not found. " + e.Message);
+                }
+                // Read in template file and get fields from response
+                JObject template = JsonConvert.DeserializeObject<JObject>(jsonString);
+                JObject fields = (JObject)res["fields"];
+                // Add values from response to template
+                foreach (JToken j in template["fields"].Children())
+                {
+                    string propertyName = j.ToObject<JProperty>().Name;
+                    try
+                    {
+                        template["fields"][propertyName] = fields[propertyName];
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Unexpected error: " + e.Message);
+                    }
+                }
+                // Return template
+                return JsonConvert.SerializeObject(template, Formatting.Indented);
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(res, Formatting.Indented);
+            }
         }
     }
 }

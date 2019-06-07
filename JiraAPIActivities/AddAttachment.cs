@@ -4,39 +4,44 @@ using System.Activities;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using JiraAPI.Properties;
 
 namespace JiraAPI.Activities
 {
+    [LocalizedDisplayName(nameof(Resources.AddAttachment))]
     public class AddAttachment : CodeActivity
     {
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Full URL for target Jira site starting with http(s)://. Note: Do not include the API endpoint. (string)")]
+        [LocalizedDescription(nameof(Resources.URLDesc))]
         public InArgument<string> URL { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Username for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.Username))]
+        [LocalizedDescription(nameof(Resources.UsernameDesc))]
         public InArgument<string> Username { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("API Key for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.ApiKey))]
+        [LocalizedDescription(nameof(Resources.ApiKeyDesc))]
         public InArgument<string> ApiKey { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("ID of target issue. (string)")]
-        public InArgument<string> IssueID { get; set; }
+        [LocalizedDisplayName(nameof(Resources.IssueKey))]
+        [LocalizedDescription(nameof(Resources.IssueKeyDesc))]
+        public InArgument<string> IssueKey { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("File path for attachment. (string)")]
+        [LocalizedDisplayName(nameof(Resources.AttachmentPath))]
+        [LocalizedDescription(nameof(Resources.AttachmentDesc))]
         public InArgument<string> AttachmentPath { get; set; }
 
         protected override void Execute(CodeActivityContext context)
         {
-            Console.WriteLine("Starting AddAttachment subroutine.");
             // Instatiate HttpClient
             HttpClient client = new HttpClient();
             string url = URL.Get(context);
@@ -69,13 +74,14 @@ namespace JiraAPI.Activities
 
             // Get variables from context
             string attachmentPath = AttachmentPath.Get(context);
-            string issueid = IssueID.Get(context);
+            string issueid = IssueKey.Get(context);
 
             // Get Mime Type of attachment
             string mimeType;
+            string[] uriSegments;
             try
             {
-                string[] uriSegments = new Uri(attachmentPath).Segments; //doesn't work for relative paths
+                uriSegments = attachmentPath.Split('\\'); // now it works for relative paths
                 mimeType = uriSegments[uriSegments.Length - 1].Split('.')[1];
             }
             catch (Exception e)
@@ -93,8 +99,7 @@ namespace JiraAPI.Activities
             {
                 HttpContent content = new ByteArrayContent(File.ReadAllBytes(attachmentPath));
                 content.Headers.ContentType = MediaTypeHeaderValue.Parse("image/" + mimeType);
-                string[] path = new Uri(attachmentPath).Segments; // Get file name
-                payload.Add(content, "file", path[path.Length - 1]);
+                payload.Add(content, "file", uriSegments[uriSegments.Length - 1]);
             }
             catch (Exception e)
             {

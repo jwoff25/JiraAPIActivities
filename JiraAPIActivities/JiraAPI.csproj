@@ -7,8 +7,8 @@
     <ProjectGuid>{FFF72930-5307-41D5-BA79-F5E55D6FD913}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JiraAPIActivities</RootNamespace>
-    <AssemblyName>JiraAPIActivities</AssemblyName>
+    <RootNamespace>JiraAPI</RootNamespace>
+    <AssemblyName>JiraAPI</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -116,11 +116,25 @@
     <Compile Include="EditIssue.cs" />
     <Compile Include="GetIssue.cs" />
     <Compile Include="CreateIssue.cs" />
+    <Compile Include="Localization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\JiraAPI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>JiraAPI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\JiraAPI.ja.resx" />
+    <EmbeddedResource Include="Properties\JiraAPI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>JiraAPI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

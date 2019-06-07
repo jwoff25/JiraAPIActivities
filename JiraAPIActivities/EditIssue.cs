@@ -4,34 +4,40 @@ using System.Activities;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
+using JiraAPI.Properties;
 
 namespace JiraAPI.Activities
 {
+    [LocalizedDisplayName(nameof(Resources.EditIssue))]
     public class EditIssue: CodeActivity
     {
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Full URL for target Jira site starting with http(s)://. Note: Do not include the API endpoint. (string)")]
+        [LocalizedDescription(nameof(Resources.URLDesc))]
         public InArgument<string> URL { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Username for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.Username))]
+        [LocalizedDescription(nameof(Resources.UsernameDesc))]
         public InArgument<string> Username { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("API Key for Atlassian account. (string)")]
+        [LocalizedDisplayName(nameof(Resources.ApiKey))]
+        [LocalizedDescription(nameof(Resources.ApiKeyDesc))]
         public InArgument<string> ApiKey { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("ID of target issue. (string)")]
-        public InArgument<string> IssueID { get; set; }
+        [LocalizedDisplayName(nameof(Resources.IssueKey))]
+        [LocalizedDescription(nameof(Resources.IssueKeyDesc))]
+        public InArgument<string> IssueKey { get; set; }
 
-        [Category("Input")]
+        [LocalizedCategory(nameof(Resources.Input))]
         [RequiredArgument]
-        [Description("Path for JSON file with updated issue data in it. (string)")]
+        [LocalizedDisplayName(nameof(Resources.JsonFilePath))]
+        [LocalizedDescription(nameof(Resources.JsonEditDesc))]
         public InArgument<string> JsonFilePath { get; set; }
 
         protected override void Execute(CodeActivityContext context)
@@ -68,7 +74,7 @@ namespace JiraAPI.Activities
 
             // Get variables from context
             string jsonfilepath = JsonFilePath.Get(context);
-            string issueid = IssueID.Get(context);
+            string issueid = IssueKey.Get(context);
 
             // Read in JSON file
             string content;
