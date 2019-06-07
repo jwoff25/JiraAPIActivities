@@ -40,7 +40,7 @@ namespace JiraAPI.Activities
         [LocalizedCategory(nameof(Resources.FieldExtraction))]
         [LocalizedDisplayName(nameof(Resources.UseDefault))]
         [LocalizedDescription(nameof(Resources.UseDefaultDesc))]
-        public bool UseDefault { get; set; }
+        public bool UseDefault { get; set; } = true;
 
         [LocalizedCategory(nameof(Resources.FieldExtraction))]
         [LocalizedDisplayName(nameof(Resources.FieldList))]
